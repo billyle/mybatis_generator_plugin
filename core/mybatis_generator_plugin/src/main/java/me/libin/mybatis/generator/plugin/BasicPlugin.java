@@ -76,13 +76,12 @@ public class BasicPlugin extends PluginAdapter {
 	}
 
 	public boolean modelPrimaryKeyClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
-		// 实体类添加统一父接口
 		for (Field field : topLevelClass.getFields()) {
 			field.setVisibility(JavaVisibility.PROTECTED);
 		}
 		makeSerializable(topLevelClass, introspectedTable);
 		generateCopy(topLevelClass, introspectedTable);
-		generateToString(topLevelClass, introspectedTable);
+		generatePrimaryKeyClassToString(topLevelClass, introspectedTable);
 		return true;
 	}
 
@@ -172,6 +171,45 @@ public class BasicPlugin extends PluginAdapter {
 		}
 	}
 
+	/**
+	 * 说明：主键类toString方法使用java字段来生成
+	 */
+	protected void generatePrimaryKeyClassToString(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+		if (Boolean.valueOf(properties.getProperty(genToString, "true"))) {
+			Method methodToString = new Method();
+			methodToString.setVisibility(JavaVisibility.PUBLIC);
+			methodToString.addJavaDocLine("/** ");
+			methodToString.addJavaDocLine(" * 格式化显示");
+			methodToString.addJavaDocLine(" */ ");
+			if (introspectedTable.isJava5Targeted()) {
+				methodToString.addAnnotation("@Override");
+			}
+			methodToString.setName("toString");
+			methodToString.setReturnType(FullyQualifiedJavaType.getStringInstance());
+
+			methodToString.addBodyLine("StringBuilder sb = new StringBuilder(getClass().getSimpleName() + \" {\");");
+			boolean isFirstField = true;
+			for (Field field : topLevelClass.getFields()) {
+				String fieldName = field.getName();
+				if ("serialVersionUID".equals(fieldName)) {
+					continue;
+				}
+				String methodName = Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
+				if (isFirstField) {
+					isFirstField = false;
+					methodToString.addBodyLine("sb.append(\"" + fieldName + "=\").append(get" + methodName + "());");
+				} else {
+					methodToString.addBodyLine("sb.append(\", " + fieldName + "=\").append(get" + methodName + "());");
+				}
+			}
+			methodToString.addBodyLine("return sb.append(\"}\").toString();");
+			topLevelClass.addMethod(methodToString);
+		}
+	}
+
+	/**
+	 * 说明：实体类生成toString时用表字段(因为当使用field时当有联合主键时会缺主键)
+	 */
 	protected void generateToString(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
 		if (Boolean.valueOf(properties.getProperty(genToString, "true"))) {
 			Method methodToString = new Method();
@@ -180,7 +218,7 @@ public class BasicPlugin extends PluginAdapter {
 			methodToString.addJavaDocLine(" * 格式化显示");
 			methodToString.addJavaDocLine(" */ ");
 			if (introspectedTable.isJava5Targeted()) {
-				methodToString.addAnnotation("@Override"); //$NON-NLS-1$
+				methodToString.addAnnotation("@Override");
 			}
 			methodToString.setName("toString");
 			methodToString.setReturnType(FullyQualifiedJavaType.getStringInstance());
