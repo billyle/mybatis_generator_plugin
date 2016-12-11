@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+  PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+  "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+	<!-- 在pom中插件加入依赖就不用这样了 -->
+	<!-- <classPathEntry location="lib\mysql-connector-java-5.1.8.jar" /> -->
+	<!--<classPathEntry location="lib\jtds-1.2.4.jar" /> -->
+
+	<context id="DB2Tables" targetRuntime="MyBatis3">
+		<plugin type="me.libin.mybatis.generator.plugin.MysqlPlugin">
+			<!-- <property name="genCopy" value="false" /> -->
+		</plugin>
+
+		<commentGenerator>
+			<property name="suppressDate" value="true" />
+			<property name="suppressAllComments" value="true" />
+		</commentGenerator>
+
+		<!-- JDBC数据库连接串信息：驱动类、连接地址、用户名、密码 -->
+
+		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
+			connectionURL="jdbc:mysql://localhost:3306/test?characterEncoding=utf8"
+			userId="root" password="root">
+		</jdbcConnection>
+
+		<!-- 强制将JDBC的DECIMAL和 NUMERIC类型解析为java.math.BigDecimal -->
+		<javaTypeResolver>
+			<property name="forceBigDecimals" value="false" />
+		</javaTypeResolver>
+
+		<!-- 自动生成Java实体类代码 -->
+		<javaModelGenerator targetPackage="me.libin.db.model"
+			targetProject="src/main/auto">
+			<property name="enableSubPackages" value="true" />
+			<property name="trimStrings" value="true" />
+		</javaModelGenerator>
+
+		<!-- 自动生成XML文件 -->
+		<sqlMapGenerator targetPackage="me.libin.db.mapper"
+			targetProject="src/main/auto">
+			<property name="enableSubPackages" value="true" />
+		</sqlMapGenerator>
+
+		<!-- 自动生成DAO接口 -->
+		<javaClientGenerator type="XMLMAPPER"
+			targetPackage="me.libin.db.mapper" targetProject="src/main/auto">
+			<property name="enableSubPackages" value="true" />
+		</javaClientGenerator>
+
+		<table domainObjectName="TestBean" tableName="t_test"
+			enableInsert="true" enableSelectByPrimaryKey="true"
+			enableUpdateByPrimaryKey="true" enableDeleteByPrimaryKey="true"
+			enableSelectByExample="true" enableUpdateByExample="true"
+			enableDeleteByExample="true" enableCountByExample="true"
+			selectByPrimaryKeyQueryId="true" selectByExampleQueryId="true">
+		</table>
+		<table domainObjectName="TestBean2" tableName="t_test_2"
+			enableInsert="true" enableSelectByPrimaryKey="true"
+			enableUpdateByPrimaryKey="true" enableDeleteByPrimaryKey="true"
+			enableSelectByExample="true" enableUpdateByExample="true"
+			enableDeleteByExample="true" enableCountByExample="true"
+			selectByPrimaryKeyQueryId="true" selectByExampleQueryId="true">
+		</table>
+	</context>
+</generatorConfiguration>
+
