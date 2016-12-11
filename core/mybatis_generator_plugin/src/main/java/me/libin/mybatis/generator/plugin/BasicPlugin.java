@@ -80,7 +80,7 @@ public class BasicPlugin extends PluginAdapter {
 			field.setVisibility(JavaVisibility.PROTECTED);
 		}
 		makeSerializable(topLevelClass, introspectedTable);
-		generateCopy(topLevelClass, introspectedTable);
+		generatePrimaryKeyClassCopy(topLevelClass, introspectedTable);
 		generatePrimaryKeyClassToString(topLevelClass, introspectedTable);
 		return true;
 	}
@@ -144,6 +144,37 @@ public class BasicPlugin extends PluginAdapter {
 		}
 	}
 
+	/**
+	 * 说明：主键类copy方法使用java字段来生成
+	 */
+	protected void generatePrimaryKeyClassCopy(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+		if (Boolean.valueOf(properties.getProperty(genCopy, "true"))) {
+			Method methodCopy = new Method();
+			methodCopy.setVisibility(JavaVisibility.PUBLIC);
+			methodCopy.addJavaDocLine("/** ");
+			methodCopy.addJavaDocLine(" * 拷贝，将对象中的字段全部拷贝到子对象中");
+			methodCopy.addJavaDocLine(" * @param bean 接收对象的子类");
+			methodCopy.addJavaDocLine(" * @return 拷贝完成后的子类");
+			methodCopy.addJavaDocLine(" */ ");
+			methodCopy.setName("<T extends " + topLevelClass.getType().getShortName() + "> T copy");
+			methodCopy.setReturnType(new FullyQualifiedJavaType(""));
+			methodCopy.addParameter(new Parameter(new FullyQualifiedJavaType("T"), "bean"));
+			for (Field field : topLevelClass.getFields()) {
+				String fieldName = field.getName();
+				if ("serialVersionUID".equals(fieldName)) {
+					continue;
+				}
+				String methodName = Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
+				methodCopy.addBodyLine("bean.set" + methodName + "(get" + methodName + "());");
+			}
+			methodCopy.addBodyLine("return bean;");
+			topLevelClass.addMethod(methodCopy);
+		}
+	}
+
+	/**
+	 * 说明：实体类生成copy时用表字段(因为当使用field时当有联合主键时会缺主键)
+	 */
 	protected void generateCopy(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
 		if (Boolean.valueOf(properties.getProperty(genCopy, "true"))) {
 			Method methodCopy = new Method();
@@ -156,13 +187,8 @@ public class BasicPlugin extends PluginAdapter {
 			methodCopy.setName("<T extends " + topLevelClass.getType().getShortName() + "> T copy");
 			methodCopy.setReturnType(new FullyQualifiedJavaType(""));
 			methodCopy.addParameter(new Parameter(new FullyQualifiedJavaType("T"), "bean"));
-
 			for (IntrospectedColumn column : introspectedTable.getAllColumns()) {
 				String columnName = column.getJavaProperty();
-				String remark = column.getRemarks();
-				if (stringHasValue(remark)) {
-					logger.info("column={},remark={}", columnName, column.getRemarks());
-				}
 				String methodName = Character.toUpperCase(columnName.charAt(0)) + columnName.substring(1);
 				methodCopy.addBodyLine("bean.set" + methodName + "(get" + methodName + "());");
 			}
