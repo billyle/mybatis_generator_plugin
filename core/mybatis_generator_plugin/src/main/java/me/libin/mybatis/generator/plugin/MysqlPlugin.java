@@ -30,8 +30,8 @@ import org.mybatis.generator.api.dom.xml.XmlElement;
  * </ul>
  */
 public class MysqlPlugin extends BasicPlugin {
-	protected String genLimit = "";
-	protected String genForUpdate = "";
+	protected String genLimit = "genLimit";
+	protected String genForUpdate = "genForUpdate";
 
 	public MysqlPlugin() {
 	}
