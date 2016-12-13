@@ -9,8 +9,9 @@
 	<!--<classPathEntry location="lib\jtds-1.2.4.jar" /> -->
 
 	<context id="DB2Tables" targetRuntime="MyBatis3">
-		<plugin type="me.libin.mybatis.generator.plugin.MysqlPlugin">
-			<!-- <property name="genCopy" value="false" /> -->
+		<!-- <plugin type="me.libin.mybatis.generator.plugin.MysqlPlugin"> <property 
+			name="genCopy" value="false" /> </plugin> -->
+		<plugin type="me.libin.mybatis.generator.plugin.SqlServerPlugin">
 		</plugin>
 
 		<commentGenerator>
@@ -20,10 +21,11 @@
 
 		<!-- JDBC数据库连接串信息：驱动类、连接地址、用户名、密码 -->
 
-		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
-			connectionURL="jdbc:mysql://localhost:3306/test?characterEncoding=utf8"
-			userId="root" password="root">
-		</jdbcConnection>
+		<!-- <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://localhost:3306/test?characterEncoding=utf8" 
+			userId="root" password="root"> </jdbcConnection> -->
+		<jdbcConnection driverClass="com.microsoft.sqlserver.jdbc.SQLServerDriver"
+			connectionURL="jdbc:sqlserver://localhost:1433;DatabaseName=test"
+			userId="sa" password="sa"></jdbcConnection>
 
 		<!-- 强制将JDBC的DECIMAL和 NUMERIC类型解析为java.math.BigDecimal -->
 		<javaTypeResolver>
@@ -56,13 +58,11 @@
 			enableDeleteByExample="true" enableCountByExample="true"
 			selectByPrimaryKeyQueryId="true" selectByExampleQueryId="true">
 		</table>
-		<table domainObjectName="TestBean2" tableName="t_test_2"
-			enableInsert="true" enableSelectByPrimaryKey="true"
-			enableUpdateByPrimaryKey="true" enableDeleteByPrimaryKey="true"
-			enableSelectByExample="true" enableUpdateByExample="true"
-			enableDeleteByExample="true" enableCountByExample="true"
-			selectByPrimaryKeyQueryId="true" selectByExampleQueryId="true">
-		</table>
+		<!-- <table domainObjectName="TestBean2" tableName="t_test_2" enableInsert="true" 
+			enableSelectByPrimaryKey="true" enableUpdateByPrimaryKey="true" enableDeleteByPrimaryKey="true" 
+			enableSelectByExample="true" enableUpdateByExample="true" enableDeleteByExample="true" 
+			enableCountByExample="true" selectByPrimaryKeyQueryId="true" selectByExampleQueryId="true"> 
+			</table> -->
 	</context>
 </generatorConfiguration>
 
