@@ -116,7 +116,7 @@ public class SqlServerPlugin extends BasicPlugin {
 				childEl.addAttribute(new Attribute("test", "_parameter != null"));
 				XmlElement childchildEl = new XmlElement("include");
 				childEl.addElement(childchildEl);
-				childchildEl.addAttribute(new Attribute("refid", "Criteria_Where_Clause"));
+				childchildEl.addAttribute(new Attribute("refid", "Example_Where_Clause"));
 			}
 			skipGreater0.addElement(
 					new TextElement(") temp_table\r\n  where rownum > ${start}\r\n  order by ${orderByClause}"));
@@ -158,7 +158,7 @@ public class SqlServerPlugin extends BasicPlugin {
 				childEl.addAttribute(new Attribute("test", "_parameter != null"));
 				XmlElement childchildEl = new XmlElement("include");
 				childEl.addElement(childchildEl);
-				childchildEl.addAttribute(new Attribute("refid", "Criteria_Where_Clause"));
+				childchildEl.addAttribute(new Attribute("refid", "Example_Where_Clause"));
 			}
 
 			{
