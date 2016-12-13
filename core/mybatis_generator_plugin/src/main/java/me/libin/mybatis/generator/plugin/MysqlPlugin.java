@@ -17,20 +17,12 @@ import org.mybatis.generator.api.dom.xml.XmlElement;
  * <li>查询类增加悲观锁开关 (genForUpdate)</li>
  * </ul>
  * 继承自 {@linkplain me.libin.mybatis.generator.plugin.BasicPlugin BasicPlugin}
- * 的功能，不能和其他{@linkplain me.libin.mybatis.generator.plugin.BasicPlugin
- * BasicPlugin} 子类公用，<br/>
- * 如果公用需要配置只让一个的公共功能生效，否则可能生成重复代码<br/>
- * 
- * <ul>
- * <li>备份以前生成的文件 (isBackUpXml)</li>
- * <li>实体类实现Serializable接口 (isSerializable)</li>
- * <li>实体类增加字段和方法的注释 (genRemarkJavaDoc)</li>
- * <li>实体类增加copy方法 (genCopy)</li>
- * <li>实体类增加toString方法 (genToString)</li>
- * </ul>
+ * 的功能，不能和{@linkplain me.libin.mybatis.generator.plugin.BasicPlugin
+ * BasicPlugin} 以及其子类同时使用<br/>
+ * 如果同时使用需要配置只让一个的公共功能生效，否则可能生成重复代码或混乱代码<br/>
  */
 public class MysqlPlugin extends BasicPlugin {
-	protected String genLimit = "genLimit";
+	protected String genPage = "genPage";
 	protected String genForUpdate = "genForUpdate";
 
 	public MysqlPlugin() {
@@ -42,7 +34,7 @@ public class MysqlPlugin extends BasicPlugin {
 	 * 悲观锁
 	 */
 	public boolean modelExampleClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
-		if (Boolean.valueOf(properties.getProperty(genLimit, "true"))) {
+		if (Boolean.valueOf(properties.getProperty(genPage, "true"))) {
 			FullyQualifiedJavaType intField = FullyQualifiedJavaType.getIntInstance();
 			// 添加分页参数
 			addFieldWithGetterAndSetter(topLevelClass, introspectedTable, "offset", intField, "0", "分页参数偏移量");
@@ -80,7 +72,7 @@ public class MysqlPlugin extends BasicPlugin {
 	 * 分页参数<br>
 	 */
 	protected void addLimit(XmlElement element) {
-		if (Boolean.valueOf(properties.getProperty(genLimit, "true"))) {
+		if (Boolean.valueOf(properties.getProperty(genPage, "true"))) {
 			// 在xml中加分页参数判断
 			XmlElement isNotNullElement = new XmlElement("if");
 			isNotNullElement.addAttribute(
