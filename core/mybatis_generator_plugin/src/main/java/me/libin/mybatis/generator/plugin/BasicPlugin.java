@@ -64,7 +64,7 @@ public class BasicPlugin extends PluginAdapter {
 	private void backUpXml(IntrospectedTable introspectedTable) {
 		SqlMapGeneratorConfiguration sqlmapConfig = context.getSqlMapGeneratorConfiguration();
 		String dir = sqlmapConfig.getTargetProject() + File.separator
-				+ sqlmapConfig.getTargetPackage().replaceAll("\\.", File.separator);
+				+ sqlmapConfig.getTargetPackage().replaceAll("\\.", "\\\\");
 		final String fileName = introspectedTable.getMyBatis3XmlMapperFileName();
 		File file = new File(dir + File.separator + fileName);
 		if (file.isFile()) {
