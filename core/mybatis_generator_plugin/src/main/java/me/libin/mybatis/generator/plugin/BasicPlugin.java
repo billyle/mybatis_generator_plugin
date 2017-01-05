@@ -28,6 +28,8 @@ import org.slf4j.LoggerFactory;
  * 说明:所有功能皆可选用，默认开启，设置参数为false即可关闭<br/>
  * <li>备份以前生成的文件 (isBackUpXml)<br/>
  * <li>实体类实现Serializable接口 (isSerializable)<br/>
+ * <li>serialVersionUID生成策略,在table节点下使用property标签配置，填入long(不填默认1)或random=随机
+ * (serialVersionUID)
  * <li>实体类增加字段和方法的注释 (genRemarkJavaDoc)<br/>
  * <li>实体类增加copy方法 (genCopy)<br/>
  * <li>实体类增加toString方法 (genToString)
@@ -37,6 +39,7 @@ public class BasicPlugin extends PluginAdapter {
 
 	public String isBackUpXml = "isBackUpXml";
 	public String isSerializable = "isSerializable";
+	public String serialVersionUID = "serialVersionUID";
 	public String genRemarkJavaDoc = "genRemarkJavaDoc";
 	public String genCopy = "genCopy";
 	public String genToString = "genToString";
@@ -127,7 +130,12 @@ public class BasicPlugin extends PluginAdapter {
 
 			Field field = new Field();
 			field.setFinal(true);
-			field.setInitializationString(new Random().nextLong() + "L");
+			String sUID = introspectedTable.getTableConfiguration().getProperty(serialVersionUID);
+			if ("random".equalsIgnoreCase(sUID)) {
+				field.setInitializationString(new Random().nextLong() + "L");
+			} else {
+				field.setInitializationString(sUID + "L");
+			}
 			field.setName("serialVersionUID");
 			field.setStatic(true);
 			field.setType(new FullyQualifiedJavaType("long"));

@@ -57,6 +57,7 @@
 			enableSelectByExample="true" enableUpdateByExample="true"
 			enableDeleteByExample="true" enableCountByExample="true"
 			selectByPrimaryKeyQueryId="true" selectByExampleQueryId="true">
+			<property name="serialVersionUID" value="2" />
 		</table>
 		<!-- <table domainObjectName="TestBean2" tableName="t_test_2" enableInsert="true" 
 			enableSelectByPrimaryKey="true" enableUpdateByPrimaryKey="true" enableDeleteByPrimaryKey="true" 
